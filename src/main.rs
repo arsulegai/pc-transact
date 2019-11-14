@@ -23,6 +23,11 @@ use crate::state_handler::commit_state;
 use crate::transaction::transaction_payload;
 use transact::signing::ursa::UrsaSigner;
 use transact::state::merkle::{MerkleRadixTree, MerkleState};
+use log::LogLevelFilter;
+use log4rs::config::{Root, Appender, Config};
+use std::process;
+use log4rs::encode::pattern::PatternEncoder;
+use log4rs::append::console::ConsoleAppender;
 
 mod batcher;
 mod handler;
@@ -47,6 +52,8 @@ mod transaction;
 /// <quantity> is a positive integer, the number of items
 /// produced/consumed.
 fn main() {
+    init_logging();
+
     // Initialize current state of the `produce-consume`
     // Start the executor
     let cur_state = match PCState::new() {
@@ -87,8 +94,34 @@ fn main() {
         };
 
         state_root = match commit_state(&statestore, &state_root, result) {
-            Ok(new_state_root) => new_state_root,
+            Ok(new_state_root) => {
+                println!("Done");
+                new_state_root
+            }
             Err(err) => panic!("Failed {:?}", err),
         };
+    }
+}
+
+fn init_logging() {
+    let console_log_level = LogLevelFilter::Trace;
+
+    let stdout = ConsoleAppender::builder()
+        .encoder(Box::new(PatternEncoder::new(
+            "{h({l:5.5})} | {({M}:{L}):20.20} | {m}{n}",
+        )))
+        .build();
+
+    let config = match Config::builder()
+        .appender(Appender::builder().build("stdout", Box::new(stdout)))
+        .build(Root::builder().appender("stdout").build(console_log_level))
+        {
+            Ok(x) => x,
+            Err(_) => process::exit(1),
+        };
+
+    match log4rs::init_config(config) {
+        Ok(_) => (),
+        Err(_) => process::exit(1),
     }
 }

@@ -17,6 +17,7 @@ use std::io;
 
 pub(crate) fn usr_input() -> Result<String, PCError> {
     let mut line = String::new();
+    println!("Enter your command: ");
     match io::stdin().read_line(&mut line) {
         Ok(_) => info!("Read the line!"),
         Err(err) => return Err(PCError::from(err.to_string())),

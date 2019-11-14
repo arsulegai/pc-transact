@@ -15,7 +15,7 @@
 use crate::input::usr_input;
 use crate::payload::ProduceConsumePayload;
 use crate::pc_error::PCError;
-use crate::proto::action::Action;
+use crate::proto::action::{Action, Action_Command};
 use protobuf::Message;
 use sha2::{Digest, Sha512};
 
@@ -38,6 +38,25 @@ pub(crate) fn transaction_payload() -> Result<(Vec<u8>, Vec<Vec<u8>>, Vec<Vec<u8
     payload.set_command(pc_payload.get_command());
     payload.set_identifier(pc_payload.get_identifier());
     payload.set_quantity(pc_payload.get_quantity());
+
+    // debug statements
+    match pc_payload.get_command() {
+        Action_Command::PRODUCE => {
+            println!(
+                "Producing {} quantity of {}",
+                pc_payload.get_quantity(),
+                pc_payload.get_identifier()
+            );
+        }
+        Action_Command::CONSUME => {
+            println!(
+                "Consuming {} quantity of {}",
+                pc_payload.get_quantity(),
+                pc_payload.get_identifier()
+            );
+        }
+    }
+
     let payload_bytes = match payload.write_to_bytes() {
         Ok(bytes) => bytes,
         Err(err) => return Err(PCError::from(err.to_string())),

@@ -44,10 +44,10 @@ impl Batcher {
         inputs: Vec<Vec<u8>>,
         outputs: Vec<Vec<u8>>,
     ) -> Result<TransactionPair, PCError> {
-//        let nonce = rand::thread_rng()
-//            .gen_iter::<u8>()
-//            .take(64)
-//            .collect::<Vec<u8>>();
+        //        let nonce = rand::thread_rng()
+        //            .gen_iter::<u8>()
+        //            .take(64)
+        //            .collect::<Vec<u8>>();
         let nonce = b"arun_nonce".to_vec();
         match TransactionBuilder::new()
             .with_batcher_public_key(self.signer.public_key().to_vec())
