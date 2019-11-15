@@ -30,7 +30,7 @@ impl ProduceConsumePayload {
     pub(crate) fn new(text: &str) -> Result<ProduceConsumePayload, PCError> {
         // match the command line arguments against the valid pattern
         // and prepare a payload that can be serialized.
-        let re = match Regex::new(r#"^(PRODUCE|CONSUME)[ ][[:word:]][ ][[:word:]]"#) {
+        let re = match Regex::new(r#"^(PRODUCE|CONSUME)[ ][[:word:]]+[ ][[:word:]]+"#) {
             Ok(match_expression) => match_expression,
             Err(err) => return Err(PCError::from(err.to_string())),
         };
