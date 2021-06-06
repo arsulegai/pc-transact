@@ -21,14 +21,14 @@ use crate::pc_state::PCState;
 use crate::scheduler::schedule;
 use crate::state_handler::commit_state;
 use crate::transaction::transaction_payload;
-use transact::state::merkle::{MerkleRadixTree, MerkleState};
-use log::LogLevelFilter;
-use log4rs::config::{Root, Appender, Config};
-use std::process;
-use log4rs::encode::pattern::PatternEncoder;
-use log4rs::append::console::ConsoleAppender;
-use cylinder::{Signer, Context};
 use cylinder::secp256k1::Secp256k1Context;
+use cylinder::{Context, Signer};
+use log::LogLevelFilter;
+use log4rs::append::console::ConsoleAppender;
+use log4rs::config::{Appender, Config, Root};
+use log4rs::encode::pattern::PatternEncoder;
+use std::process;
+use transact::state::merkle::{MerkleRadixTree, MerkleState};
 
 mod batcher;
 mod handler;
@@ -122,10 +122,10 @@ fn init_logging() {
     let config = match Config::builder()
         .appender(Appender::builder().build("stdout", Box::new(stdout)))
         .build(Root::builder().appender("stdout").build(console_log_level))
-        {
-            Ok(x) => x,
-            Err(_) => process::exit(1),
-        };
+    {
+        Ok(x) => x,
+        Err(_) => process::exit(1),
+    };
 
     match log4rs::init_config(config) {
         Ok(_) => (),

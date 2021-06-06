@@ -32,8 +32,8 @@ pub(crate) fn commit_state(
 
     // Extract the transaction execution result
     let mut state_change_vector = match txn_result {
-        TransactionResult::Valid{state_changes, .. } => state_changes,
-        TransactionResult::Invalid{error_message, ..} => {
+        TransactionResult::Valid { state_changes, .. } => state_changes,
+        TransactionResult::Invalid { error_message, .. } => {
             return Err(PCError::from(error_message))
         }
     };

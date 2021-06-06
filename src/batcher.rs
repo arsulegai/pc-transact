@@ -14,10 +14,10 @@
 
 use crate::handler::{PRODUCE_CONSUME, VERSION};
 use crate::pc_error::PCError;
+use cylinder::Signer;
 use rand::Rng;
 use transact::protocol::batch::{BatchBuilder, BatchPair};
 use transact::protocol::transaction::{HashMethod, TransactionBuilder, TransactionPair};
-use cylinder::Signer;
 
 pub(crate) struct Batcher {
     signer: Box<dyn Signer>,
