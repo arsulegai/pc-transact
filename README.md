@@ -59,4 +59,4 @@ Each commit must include a `Signed-off-by:` in the commit message
 This software is licensed under the [Apache License Version 2.0](LICENSE)
 software license.
 
-&copy; Copyright 2019, Walmart Inc.
+&copy; Copyright 2019, Arun S M
