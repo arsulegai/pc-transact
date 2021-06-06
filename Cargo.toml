@@ -19,10 +19,11 @@ authors = ["Walmart Inc."]
 edition = "2018"
 
 [dependencies]
-transact = { git = "https://github.com/hyperledger/transact", features = ["sawtooth-compat", "ursa-compat"] }
+transact = { version = "0.3.7" , features = ["sawtooth-compat"] }
+cylinder = "0.2"
 protobuf = "2"
 regex = "1.3.1"
-sawtooth-sdk = { version = "0.3.0" }
+sawtooth-sdk = "0.5"
 rust-crypto = "0.2.36"
 log = "0.3.0"
 log4rs = "0.7.0"

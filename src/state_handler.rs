@@ -13,8 +13,8 @@
 // limitations under the License.
 
 use crate::pc_error::PCError;
-use transact::protocol::receipt::StateChange;
-use transact::scheduler::{BatchExecutionResult, TransactionExecutionResult};
+use transact::protocol::receipt::{StateChange, TransactionReceipt, TransactionResult};
+use transact::scheduler::BatchExecutionResult;
 use transact::state::merkle::MerkleState;
 use transact::state::StateChange as ChangeSet;
 use transact::state::Write;
@@ -25,20 +25,20 @@ pub(crate) fn commit_state(
     mut result: BatchExecutionResult,
 ) -> Result<String, PCError> {
     // Extract the transaction result
-    let txn_result = match result.results.pop() {
-        Some(result) => result,
+    let txn_result = match result.receipts.pop() {
+        Some(result) => result.transaction_result,
         None => return Err(PCError::from("Unable to find the result")),
     };
 
     // Extract the transaction execution result
-    let mut txn_receipt = match txn_result {
-        TransactionExecutionResult::Valid(receipt) => receipt,
-        TransactionExecutionResult::Invalid(invalid) => {
-            return Err(PCError::from(invalid.error_message))
+    let mut state_change_vector = match txn_result {
+        TransactionResult::Valid{state_changes, .. } => state_changes,
+        TransactionResult::Invalid{error_message, ..} => {
+            return Err(PCError::from(error_message))
         }
     };
 
-    let state_changes = match txn_receipt.state_changes.pop() {
+    let state_changes = match state_change_vector.pop() {
         Some(state_change) => state_change,
         None => {
             return Err(PCError::from(

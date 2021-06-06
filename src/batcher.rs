@@ -17,7 +17,7 @@ use crate::pc_error::PCError;
 use rand::Rng;
 use transact::protocol::batch::{BatchBuilder, BatchPair};
 use transact::protocol::transaction::{HashMethod, TransactionBuilder, TransactionPair};
-use transact::signing::Signer;
+use cylinder::Signer;
 
 pub(crate) struct Batcher {
     signer: Box<dyn Signer>,
@@ -50,7 +50,7 @@ impl Batcher {
         //            .collect::<Vec<u8>>();
         let nonce = b"arun_nonce".to_vec();
         match TransactionBuilder::new()
-            .with_batcher_public_key(self.signer.public_key().to_vec())
+            .with_batcher_public_key(self.signer.public_key().unwrap().into_bytes())
             .with_family_name(PRODUCE_CONSUME.to_string())
             .with_family_version(VERSION.to_string())
             .with_inputs(inputs)

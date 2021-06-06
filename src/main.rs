@@ -21,13 +21,14 @@ use crate::pc_state::PCState;
 use crate::scheduler::schedule;
 use crate::state_handler::commit_state;
 use crate::transaction::transaction_payload;
-use transact::signing::ursa::UrsaSigner;
 use transact::state::merkle::{MerkleRadixTree, MerkleState};
 use log::LogLevelFilter;
 use log4rs::config::{Root, Appender, Config};
 use std::process;
 use log4rs::encode::pattern::PatternEncoder;
 use log4rs::append::console::ConsoleAppender;
+use cylinder::{Signer, Context};
+use cylinder::secp256k1::Secp256k1Context;
 
 mod batcher;
 mod handler;
@@ -71,7 +72,7 @@ fn main() {
     let mut state_root = db.get_merkle_root();
 
     // Generate a signer
-    let signer = UrsaSigner::new();
+    let signer = new_signer();
 
     // Get the payload signed by the signer
     let batcher_obj = Batcher::new(Box::from(signer));
@@ -101,6 +102,12 @@ fn main() {
             Err(err) => panic!("Failed {:?}", err),
         };
     }
+}
+
+fn new_signer() -> Box<dyn Signer> {
+    let context = Secp256k1Context::new();
+    let key = context.new_random_private_key();
+    context.new_signer(key)
 }
 
 fn init_logging() {
